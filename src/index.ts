@@ -4,12 +4,14 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-co
 
 /* == Internal modules == */
 import { schema } from './schema';
+import { context } from "./context";
 
 /* == PORT == */
 const PORT = process.env.PORT || 3000;
 
 export const server = new ApolloServer({
   schema,
+  context,
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground]
 });
 

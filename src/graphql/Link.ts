@@ -1,6 +1,5 @@
 /* objectType is used to create a new type in your GraphQL schema. Let's dig into the syntax: */
 import { objectType, extendType, stringArg, nonNull } from 'nexus';
-import { NexusGenObjects } from '../../nexus-typegen';
 
 export const Link = objectType({
   name: "Link",
@@ -8,21 +7,18 @@ export const Link = objectType({
     t.nonNull.int('id');
     t.nonNull.string('description');
     t.nonNull.string('url');
+    t.field('postedBy', {
+      type: 'User',
+      resolve(parent, args, context) {
+        return context.prisma.link.findUnique({
+          where: {
+            id: Number(parent.id)
+          }
+        }).postedBy()
+      }
+    })
   }
 });
-
-let links: NexusGenObjects["Link"][] = [
-  {
-    id: 1,
-    url: "www.howtographql.com",
-    description: "Fullstack tutorial for GraphQL",
-  },
-  {
-    id: 2,
-    url: "graphql.org",
-    description: "GraphQL official website",
-  },
-];
 
 /* == Query == */
 export const LinkQuery = extendType({
@@ -30,8 +26,8 @@ export const LinkQuery = extendType({
   definition(t) {
     t.nonNull.list.nonNull.field("feed", {
       type: "Link",
-      resolve(parent, args, context, info) {
-        return links
+      resolve(parent, args, context) {
+        return context.prisma.link.findMany();
       }
     })
   }
@@ -49,18 +45,14 @@ export const LinkMutation = extendType({
       },
       resolve(parent, args, context) {
         const { description, url } = args;
-
-        let idCount = links.length + 1;
-        const link = {
-          id: idCount,
-          description: description,
-          url: url
-        }
-
-        links.push(link)
-        return link
+        const newLink = context.prisma.link.create({
+          data: {
+            description,
+            url
+          }
+        });
+        return newLink
       },
     });
   }
 });
-
