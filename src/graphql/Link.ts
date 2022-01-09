@@ -45,10 +45,17 @@ export const LinkMutation = extendType({
       },
       resolve(parent, args, context) {
         const { description, url } = args;
+        const { userId } = context;
+
         const newLink = context.prisma.link.create({
           data: {
             description,
-            url
+            url,
+            postedBy: {
+              connect: {
+                id: userId
+              }
+            }
           }
         });
         return newLink
