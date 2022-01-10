@@ -1,5 +1,5 @@
 /* objectType is used to create a new type in your GraphQL schema. Let's dig into the syntax: */
-import { objectType, extendType, stringArg, nonNull } from 'nexus';
+import { objectType, extendType, stringArg, nonNull, intArg } from 'nexus';
 
 export const Link = objectType({
   name: "Link",
@@ -39,10 +39,28 @@ export const LinkQuery = extendType({
   definition(t) {
     t.nonNull.list.nonNull.field("feed", {
       type: "Link",
+      args: {
+        filter: stringArg(),
+        skip: intArg(),
+        take: intArg(),
+      },
       resolve(parent, args, context) {
-        return context.prisma.link.findMany();
+        const where = args.filter
+          ? {
+            OR: [
+              { description: { contains: args.filter } },
+              { url: { contains: args.filter } },
+            ]
+          }
+          : {}
+
+        return context.prisma.link.findMany({
+          where,
+          skip: args?.skip as number | undefined,
+          take: args?.take as number | undefined,
+        });
       }
-    })
+    });
   }
 });
 
