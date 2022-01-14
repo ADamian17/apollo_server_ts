@@ -1,10 +1,11 @@
 {
   "name": "hackernews-ts",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/index.ts",
   "author": "Adonis D Martin",
   "license": "MIT",
   "scripts": {
+    "start": "ts-node src/index.ts",
     "dev": "ts-node-dev --transpile-only --no-notify --exit-child src/index.ts",
     "generate": "ts-node --transpile-only src/schema.ts"
   },
@@ -19,6 +20,7 @@
     "jsonwebtoken": "~8.5.0",
     "nexus": "^1.1.0",
     "prisma": "^3.7.0",
+    "ts-node": "^10.4.0",
     "ts-node-dev": "^1.1.8",
     "typescript": "^4.5.4"
   },
