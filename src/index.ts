@@ -5,7 +5,7 @@ import * as dotenv from "dotenv"
 
 /* == Internal modules == */
 import { schema } from './schema';
-import { context } from "./context";
+import { context } from "./data-source/context";
 
 dotenv.config();
 
